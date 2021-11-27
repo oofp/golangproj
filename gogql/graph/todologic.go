@@ -9,7 +9,7 @@ import (
 	"errors"
 	"sync"
 
-	"github.com/brozinov/gogql/graph/model"
+	"github.com/golangproj/oofp/gogql/graph/model"
 )
 
 var todos sync.Map

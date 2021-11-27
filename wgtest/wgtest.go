@@ -5,8 +5,6 @@ import (
 	"log"
 	"net/http"
 	"sync"
-	//"log"
-	//"net/http"
 )
 
 func handler_func(wr http.ResponseWriter, req *http.Request) {
@@ -41,6 +39,8 @@ func handler_func(wr http.ResponseWriter, req *http.Request) {
 }
 
 func main() {
+	fmt.Println("Hello, to start please proceed to http://localhost:8020 at your browser")
+
 	http.HandleFunc("/", handler_func)
 
 	go func() {

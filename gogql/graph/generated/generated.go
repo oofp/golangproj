@@ -13,7 +13,7 @@ import (
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/brozinov/gogql/graph/model"
+	"github.com/golangproj/oofp/gogql/graph/model"
 	gqlparser "github.com/vektah/gqlparser/v2"
 	"github.com/vektah/gqlparser/v2/ast"
 )
@@ -350,7 +350,7 @@ func (ec *executionContext) field_Mutation_createTodo_args(ctx context.Context, 
 	var arg0 model.NewTodo
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
-		arg0, err = ec.unmarshalNNewTodo2githubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐNewTodo(ctx, tmp)
+		arg0, err = ec.unmarshalNNewTodo2githubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐNewTodo(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
@@ -490,7 +490,7 @@ func (ec *executionContext) _Mutation_createTodo(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalNTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalNTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_removeTodo(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -529,7 +529,7 @@ func (ec *executionContext) _Mutation_removeTodo(ctx context.Context, field grap
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalOTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalOTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Mutation_setTodoDone(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -568,7 +568,7 @@ func (ec *executionContext) _Mutation_setTodoDone(ctx context.Context, field gra
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalOTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalOTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -603,7 +603,7 @@ func (ec *executionContext) _Query_todos(ctx context.Context, field graphql.Coll
 	}
 	res := resTmp.([]*model.Todo)
 	fc.Result = res
-	return ec.marshalNTodo2ᚕᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodoᚄ(ctx, field.Selections, res)
+	return ec.marshalNTodo2ᚕᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodoᚄ(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _Query___type(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
@@ -716,7 +716,7 @@ func (ec *executionContext) _Subscription_todoChanges(ctx context.Context, field
 			w.Write([]byte{'{'})
 			graphql.MarshalString(field.Alias).MarshalGQL(w)
 			w.Write([]byte{':'})
-			ec.marshalNTodoEvent2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx, field.Selections, res).MarshalGQL(w)
+			ec.marshalNTodoEvent2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx, field.Selections, res).MarshalGQL(w)
 			w.Write([]byte{'}'})
 		})
 	}
@@ -859,7 +859,7 @@ func (ec *executionContext) _Todo_user(ctx context.Context, field graphql.Collec
 	}
 	res := resTmp.(*model.User)
 	fc.Result = res
-	return ec.marshalNUser2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+	return ec.marshalNUser2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TodoEvent_evType(ctx context.Context, field graphql.CollectedField, obj *model.TodoEvent) (ret graphql.Marshaler) {
@@ -891,7 +891,7 @@ func (ec *executionContext) _TodoEvent_evType(ctx context.Context, field graphql
 	}
 	res := resTmp.(*model.EventType)
 	fc.Result = res
-	return ec.marshalOEventType2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐEventType(ctx, field.Selections, res)
+	return ec.marshalOEventType2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐEventType(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _TodoEvent_todo(ctx context.Context, field graphql.CollectedField, obj *model.TodoEvent) (ret graphql.Marshaler) {
@@ -923,7 +923,7 @@ func (ec *executionContext) _TodoEvent_todo(ctx context.Context, field graphql.C
 	}
 	res := resTmp.(*model.Todo)
 	fc.Result = res
-	return ec.marshalOTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
+	return ec.marshalOTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, field.Selections, res)
 }
 
 func (ec *executionContext) _User_id(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
@@ -2636,7 +2636,7 @@ func (ec *executionContext) marshalNID2string(ctx context.Context, sel ast.Selec
 	return res
 }
 
-func (ec *executionContext) unmarshalNNewTodo2githubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐNewTodo(ctx context.Context, v interface{}) (model.NewTodo, error) {
+func (ec *executionContext) unmarshalNNewTodo2githubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐNewTodo(ctx context.Context, v interface{}) (model.NewTodo, error) {
 	res, err := ec.unmarshalInputNewTodo(ctx, v)
 	return res, graphql.ErrorOnPath(ctx, err)
 }
@@ -2656,11 +2656,11 @@ func (ec *executionContext) marshalNString2string(ctx context.Context, sel ast.S
 	return res
 }
 
-func (ec *executionContext) marshalNTodo2githubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalNTodo2githubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v model.Todo) graphql.Marshaler {
 	return ec._Todo(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodoᚄ(ctx context.Context, sel ast.SelectionSet, v []*model.Todo) graphql.Marshaler {
 	ret := make(graphql.Array, len(v))
 	var wg sync.WaitGroup
 	isLen1 := len(v) == 1
@@ -2684,7 +2684,7 @@ func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋbrozinovᚋgogql�
 			if !isLen1 {
 				defer wg.Done()
 			}
-			ret[i] = ec.marshalNTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, sel, v[i])
+			ret[i] = ec.marshalNTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx, sel, v[i])
 		}
 		if isLen1 {
 			f(i)
@@ -2704,7 +2704,7 @@ func (ec *executionContext) marshalNTodo2ᚕᚖgithubᚗcomᚋbrozinovᚋgogql�
 	return ret
 }
 
-func (ec *executionContext) marshalNTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalNTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2714,11 +2714,11 @@ func (ec *executionContext) marshalNTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgr
 	return ec._Todo(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNTodoEvent2githubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx context.Context, sel ast.SelectionSet, v model.TodoEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNTodoEvent2githubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx context.Context, sel ast.SelectionSet, v model.TodoEvent) graphql.Marshaler {
 	return ec._TodoEvent(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNTodoEvent2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx context.Context, sel ast.SelectionSet, v *model.TodoEvent) graphql.Marshaler {
+func (ec *executionContext) marshalNTodoEvent2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodoEvent(ctx context.Context, sel ast.SelectionSet, v *model.TodoEvent) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2728,7 +2728,7 @@ func (ec *executionContext) marshalNTodoEvent2ᚖgithubᚗcomᚋbrozinovᚋgogql
 	return ec._TodoEvent(ctx, sel, v)
 }
 
-func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
+func (ec *executionContext) marshalNUser2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐUser(ctx context.Context, sel ast.SelectionSet, v *model.User) graphql.Marshaler {
 	if v == nil {
 		if !graphql.HasFieldError(ctx, graphql.GetFieldContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -3019,7 +3019,7 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return graphql.MarshalBoolean(*v)
 }
 
-func (ec *executionContext) unmarshalOEventType2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐEventType(ctx context.Context, v interface{}) (*model.EventType, error) {
+func (ec *executionContext) unmarshalOEventType2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐEventType(ctx context.Context, v interface{}) (*model.EventType, error) {
 	if v == nil {
 		return nil, nil
 	}
@@ -3028,7 +3028,7 @@ func (ec *executionContext) unmarshalOEventType2ᚖgithubᚗcomᚋbrozinovᚋgog
 	return res, graphql.ErrorOnPath(ctx, err)
 }
 
-func (ec *executionContext) marshalOEventType2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐEventType(ctx context.Context, sel ast.SelectionSet, v *model.EventType) graphql.Marshaler {
+func (ec *executionContext) marshalOEventType2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐEventType(ctx context.Context, sel ast.SelectionSet, v *model.EventType) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
@@ -3059,7 +3059,7 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 	return graphql.MarshalString(*v)
 }
 
-func (ec *executionContext) marshalOTodo2ᚖgithubᚗcomᚋbrozinovᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
+func (ec *executionContext) marshalOTodo2ᚖgithubᚗcomᚋgolangprojᚋoofpᚋgogqlᚋgraphᚋmodelᚐTodo(ctx context.Context, sel ast.SelectionSet, v *model.Todo) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}

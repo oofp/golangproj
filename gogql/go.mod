@@ -1,4 +1,4 @@
-module github.com/brozinov/gogql
+module github.com/golangproj/oofp/gogql
 
 go 1.17
 
