@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package todoproto;
+
+
+// protoc --go_out=. --go_opt=paths=source_relative --go-grpc_out=. --go-grpc_opt=paths=source_relative todoproto/todogrpc.proto
+
+option go_package = "oofp/todogrpc/todoproto";
+
+service TodoGrpc {
+    rpc CreateNewToDo(NewToDo) returns (ToDo) {}
+}
+
+message NewToDo {
+    string task = 1;
+    int32 userID = 2;
+}
+
+message ToDo {
+    string task = 1;
+    int32 userID = 2;
+    bool done = 3;
+    string todoID = 4;
+}
