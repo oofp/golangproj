@@ -1,4 +1,4 @@
-# golang projects: learning and POCs
+### golang projects: learning and POCs
 
 * Hello, Go
 * WaitGroup test with simple http server and client
