@@ -3,3 +3,4 @@
 * Hello, Go
 * WaitGroup test with simple http server and client
 * Simple in-memory TODO list with GraphQL (incuding mutation and subscription) 
+* Basic GRPC cleint/server 

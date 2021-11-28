@@ -1,3 +1,3 @@
-module brozinov/wgtest
+module oofp/wgtest
 
 go 1.17
