@@ -9,6 +9,7 @@ option go_package = "oofp/todogrpc/todoproto";
 
 service TodoGrpc {
     rpc CreateNewToDo(NewToDo) returns (ToDo) {}
+    rpc GetAllToDos (NoParams) returns (stream ToDo) {}
 }
 
 message NewToDo {
@@ -21,4 +22,8 @@ message ToDo {
     int32 userID = 2;
     bool done = 3;
     string todoID = 4;
+}
+
+message NoParams {
+
 }

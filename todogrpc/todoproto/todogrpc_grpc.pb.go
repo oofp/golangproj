@@ -19,6 +19,7 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type TodoGrpcClient interface {
 	CreateNewToDo(ctx context.Context, in *NewToDo, opts ...grpc.CallOption) (*ToDo, error)
+	GetAllToDos(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (TodoGrpc_GetAllToDosClient, error)
 }
 
 type todoGrpcClient struct {
@@ -38,11 +39,44 @@ func (c *todoGrpcClient) CreateNewToDo(ctx context.Context, in *NewToDo, opts ..
 	return out, nil
 }
 
+func (c *todoGrpcClient) GetAllToDos(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (TodoGrpc_GetAllToDosClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TodoGrpc_ServiceDesc.Streams[0], "/todoproto.TodoGrpc/GetAllToDos", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGrpcGetAllToDosClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type TodoGrpc_GetAllToDosClient interface {
+	Recv() (*ToDo, error)
+	grpc.ClientStream
+}
+
+type todoGrpcGetAllToDosClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGrpcGetAllToDosClient) Recv() (*ToDo, error) {
+	m := new(ToDo)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // TodoGrpcServer is the server API for TodoGrpc service.
 // All implementations must embed UnimplementedTodoGrpcServer
 // for forward compatibility
 type TodoGrpcServer interface {
 	CreateNewToDo(context.Context, *NewToDo) (*ToDo, error)
+	GetAllToDos(*NoParams, TodoGrpc_GetAllToDosServer) error
 	mustEmbedUnimplementedTodoGrpcServer()
 }
 
@@ -52,6 +86,9 @@ type UnimplementedTodoGrpcServer struct {
 
 func (UnimplementedTodoGrpcServer) CreateNewToDo(context.Context, *NewToDo) (*ToDo, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNewToDo not implemented")
+}
+func (UnimplementedTodoGrpcServer) GetAllToDos(*NoParams, TodoGrpc_GetAllToDosServer) error {
+	return status.Errorf(codes.Unimplemented, "method GetAllToDos not implemented")
 }
 func (UnimplementedTodoGrpcServer) mustEmbedUnimplementedTodoGrpcServer() {}
 
@@ -84,6 +121,27 @@ func _TodoGrpc_CreateNewToDo_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
+func _TodoGrpc_GetAllToDos_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoParams)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TodoGrpcServer).GetAllToDos(m, &todoGrpcGetAllToDosServer{stream})
+}
+
+type TodoGrpc_GetAllToDosServer interface {
+	Send(*ToDo) error
+	grpc.ServerStream
+}
+
+type todoGrpcGetAllToDosServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGrpcGetAllToDosServer) Send(m *ToDo) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 // TodoGrpc_ServiceDesc is the grpc.ServiceDesc for TodoGrpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -96,6 +154,12 @@ var TodoGrpc_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _TodoGrpc_CreateNewToDo_Handler,
 		},
 	},
-	Streams:  []grpc.StreamDesc{},
+	Streams: []grpc.StreamDesc{
+		{
+			StreamName:    "GetAllToDos",
+			Handler:       _TodoGrpc_GetAllToDos_Handler,
+			ServerStreams: true,
+		},
+	},
 	Metadata: "todoproto/todogrpc.proto",
 }
