@@ -10,6 +10,10 @@ option go_package = "oofp/todogrpc/todoproto";
 service TodoGrpc {
     rpc CreateNewToDo(NewToDo) returns (ToDo) {}
     rpc GetAllToDos (NoParams) returns (stream ToDo) {}
+    rpc MonitorToDos (NoParams) returns (stream ToDoUpdate) {}
+    rpc ApplyOps (stream ToDoOp) returns (stream ToDoUpdate) {}
+    rpc KeepAlive (stream Ping) returns (stream Pong) {}
+    rpc Kill (NoParams) returns (NoParams) {}
 }
 
 message NewToDo {
@@ -26,4 +30,44 @@ message ToDo {
 
 message NoParams {
 
+}
+
+enum ToDoUpdateType {
+    Added = 0;
+    Updated = 1;
+    Deleted = 2;
+}
+
+message ToDoUpdate {
+    ToDoUpdateType updateType = 1;
+    ToDo todo = 2;
+}
+
+message AddToDoOp {
+    NewToDo todo = 1;
+}
+
+message UpdateToDoOp {
+    string todoID = 1;
+    bool done = 2;
+}
+
+message DeleteToDoOp {
+    string todoID = 1;
+}
+
+message ToDoOp {
+    oneof op {
+        AddToDoOp add = 1; 
+        UpdateToDoOp upd = 2; 
+        DeleteToDoOp del = 3; 
+    }
+}
+
+message Ping {
+    int64 msgID = 1;
+}
+
+message Pong {
+    int64 msgID = 1;
 }

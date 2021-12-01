@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"net"
@@ -39,6 +40,40 @@ func (s *TodoGrpcServer) GetAllToDos(_ *pb.NoParams, resp pb.TodoGrpc_GetAllToDo
 	})
 
 	return nil
+}
+
+func (s *TodoGrpcServer) KeepAlive(ka pb.TodoGrpc_KeepAliveServer) error {
+
+	for {
+		ping, err := ka.Recv()
+		if err != nil {
+			if err == io.EOF {
+				log.Printf("Keep alive terminated by client")
+			} else {
+				log.Printf("Ping error:%v", err)
+			}
+
+			break
+		}
+
+		msgID := ping.GetMsgID()
+
+		pong := pb.Pong{MsgID: msgID}
+
+		ka.Send(&pong)
+
+		if msgID == 0 {
+			log.Printf("Keep alive 0, exiting loop")
+			break
+		}
+	}
+
+	return nil
+}
+
+func (s TodoGrpcServer) Kill(ctx context.Context, _ *pb.NoParams) (*pb.NoParams, error) {
+	log.Fatal("Kill received")
+	return &pb.NoParams{}, nil
 }
 
 func main() {

@@ -20,6 +20,10 @@ const _ = grpc.SupportPackageIsVersion7
 type TodoGrpcClient interface {
 	CreateNewToDo(ctx context.Context, in *NewToDo, opts ...grpc.CallOption) (*ToDo, error)
 	GetAllToDos(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (TodoGrpc_GetAllToDosClient, error)
+	MonitorToDos(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (TodoGrpc_MonitorToDosClient, error)
+	ApplyOps(ctx context.Context, opts ...grpc.CallOption) (TodoGrpc_ApplyOpsClient, error)
+	KeepAlive(ctx context.Context, opts ...grpc.CallOption) (TodoGrpc_KeepAliveClient, error)
+	Kill(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (*NoParams, error)
 }
 
 type todoGrpcClient struct {
@@ -71,12 +75,119 @@ func (x *todoGrpcGetAllToDosClient) Recv() (*ToDo, error) {
 	return m, nil
 }
 
+func (c *todoGrpcClient) MonitorToDos(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (TodoGrpc_MonitorToDosClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TodoGrpc_ServiceDesc.Streams[1], "/todoproto.TodoGrpc/MonitorToDos", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGrpcMonitorToDosClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type TodoGrpc_MonitorToDosClient interface {
+	Recv() (*ToDoUpdate, error)
+	grpc.ClientStream
+}
+
+type todoGrpcMonitorToDosClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGrpcMonitorToDosClient) Recv() (*ToDoUpdate, error) {
+	m := new(ToDoUpdate)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *todoGrpcClient) ApplyOps(ctx context.Context, opts ...grpc.CallOption) (TodoGrpc_ApplyOpsClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TodoGrpc_ServiceDesc.Streams[2], "/todoproto.TodoGrpc/ApplyOps", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGrpcApplyOpsClient{stream}
+	return x, nil
+}
+
+type TodoGrpc_ApplyOpsClient interface {
+	Send(*ToDoOp) error
+	Recv() (*ToDoUpdate, error)
+	grpc.ClientStream
+}
+
+type todoGrpcApplyOpsClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGrpcApplyOpsClient) Send(m *ToDoOp) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *todoGrpcApplyOpsClient) Recv() (*ToDoUpdate, error) {
+	m := new(ToDoUpdate)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *todoGrpcClient) KeepAlive(ctx context.Context, opts ...grpc.CallOption) (TodoGrpc_KeepAliveClient, error) {
+	stream, err := c.cc.NewStream(ctx, &TodoGrpc_ServiceDesc.Streams[3], "/todoproto.TodoGrpc/KeepAlive", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &todoGrpcKeepAliveClient{stream}
+	return x, nil
+}
+
+type TodoGrpc_KeepAliveClient interface {
+	Send(*Ping) error
+	Recv() (*Pong, error)
+	grpc.ClientStream
+}
+
+type todoGrpcKeepAliveClient struct {
+	grpc.ClientStream
+}
+
+func (x *todoGrpcKeepAliveClient) Send(m *Ping) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *todoGrpcKeepAliveClient) Recv() (*Pong, error) {
+	m := new(Pong)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *todoGrpcClient) Kill(ctx context.Context, in *NoParams, opts ...grpc.CallOption) (*NoParams, error) {
+	out := new(NoParams)
+	err := c.cc.Invoke(ctx, "/todoproto.TodoGrpc/Kill", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // TodoGrpcServer is the server API for TodoGrpc service.
 // All implementations must embed UnimplementedTodoGrpcServer
 // for forward compatibility
 type TodoGrpcServer interface {
 	CreateNewToDo(context.Context, *NewToDo) (*ToDo, error)
 	GetAllToDos(*NoParams, TodoGrpc_GetAllToDosServer) error
+	MonitorToDos(*NoParams, TodoGrpc_MonitorToDosServer) error
+	ApplyOps(TodoGrpc_ApplyOpsServer) error
+	KeepAlive(TodoGrpc_KeepAliveServer) error
+	Kill(context.Context, *NoParams) (*NoParams, error)
 	mustEmbedUnimplementedTodoGrpcServer()
 }
 
@@ -89,6 +200,18 @@ func (UnimplementedTodoGrpcServer) CreateNewToDo(context.Context, *NewToDo) (*To
 }
 func (UnimplementedTodoGrpcServer) GetAllToDos(*NoParams, TodoGrpc_GetAllToDosServer) error {
 	return status.Errorf(codes.Unimplemented, "method GetAllToDos not implemented")
+}
+func (UnimplementedTodoGrpcServer) MonitorToDos(*NoParams, TodoGrpc_MonitorToDosServer) error {
+	return status.Errorf(codes.Unimplemented, "method MonitorToDos not implemented")
+}
+func (UnimplementedTodoGrpcServer) ApplyOps(TodoGrpc_ApplyOpsServer) error {
+	return status.Errorf(codes.Unimplemented, "method ApplyOps not implemented")
+}
+func (UnimplementedTodoGrpcServer) KeepAlive(TodoGrpc_KeepAliveServer) error {
+	return status.Errorf(codes.Unimplemented, "method KeepAlive not implemented")
+}
+func (UnimplementedTodoGrpcServer) Kill(context.Context, *NoParams) (*NoParams, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Kill not implemented")
 }
 func (UnimplementedTodoGrpcServer) mustEmbedUnimplementedTodoGrpcServer() {}
 
@@ -142,6 +265,97 @@ func (x *todoGrpcGetAllToDosServer) Send(m *ToDo) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _TodoGrpc_MonitorToDos_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(NoParams)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(TodoGrpcServer).MonitorToDos(m, &todoGrpcMonitorToDosServer{stream})
+}
+
+type TodoGrpc_MonitorToDosServer interface {
+	Send(*ToDoUpdate) error
+	grpc.ServerStream
+}
+
+type todoGrpcMonitorToDosServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGrpcMonitorToDosServer) Send(m *ToDoUpdate) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func _TodoGrpc_ApplyOps_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TodoGrpcServer).ApplyOps(&todoGrpcApplyOpsServer{stream})
+}
+
+type TodoGrpc_ApplyOpsServer interface {
+	Send(*ToDoUpdate) error
+	Recv() (*ToDoOp, error)
+	grpc.ServerStream
+}
+
+type todoGrpcApplyOpsServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGrpcApplyOpsServer) Send(m *ToDoUpdate) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *todoGrpcApplyOpsServer) Recv() (*ToDoOp, error) {
+	m := new(ToDoOp)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _TodoGrpc_KeepAlive_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(TodoGrpcServer).KeepAlive(&todoGrpcKeepAliveServer{stream})
+}
+
+type TodoGrpc_KeepAliveServer interface {
+	Send(*Pong) error
+	Recv() (*Ping, error)
+	grpc.ServerStream
+}
+
+type todoGrpcKeepAliveServer struct {
+	grpc.ServerStream
+}
+
+func (x *todoGrpcKeepAliveServer) Send(m *Pong) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *todoGrpcKeepAliveServer) Recv() (*Ping, error) {
+	m := new(Ping)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _TodoGrpc_Kill_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NoParams)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(TodoGrpcServer).Kill(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/todoproto.TodoGrpc/Kill",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(TodoGrpcServer).Kill(ctx, req.(*NoParams))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // TodoGrpc_ServiceDesc is the grpc.ServiceDesc for TodoGrpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -153,12 +367,33 @@ var TodoGrpc_ServiceDesc = grpc.ServiceDesc{
 			MethodName: "CreateNewToDo",
 			Handler:    _TodoGrpc_CreateNewToDo_Handler,
 		},
+		{
+			MethodName: "Kill",
+			Handler:    _TodoGrpc_Kill_Handler,
+		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
 			StreamName:    "GetAllToDos",
 			Handler:       _TodoGrpc_GetAllToDos_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "MonitorToDos",
+			Handler:       _TodoGrpc_MonitorToDos_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "ApplyOps",
+			Handler:       _TodoGrpc_ApplyOps_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "KeepAlive",
+			Handler:       _TodoGrpc_KeepAlive_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "todoproto/todogrpc.proto",
