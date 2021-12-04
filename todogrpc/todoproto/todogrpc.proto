@@ -36,6 +36,7 @@ enum ToDoUpdateType {
     Added = 0;
     Updated = 1;
     Deleted = 2;
+    Noop = 3;
 }
 
 message ToDoUpdate {

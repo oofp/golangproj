@@ -20,7 +20,12 @@ const (
 
 type TodoGrpcServer struct {
 	pb.UnimplementedTodoGrpcServer
-	todos sync.Map
+	todos  sync.Map
+	pubsub *PubSub
+}
+
+func NewTodoGrpcServer() *TodoGrpcServer {
+	return &TodoGrpcServer{pubsub: NewPubSub()}
 }
 
 func (s *TodoGrpcServer) CreateNewToDo(ctx context.Context, newToDo *pb.NewToDo) (*pb.ToDo, error) {
@@ -44,11 +49,30 @@ func (s *TodoGrpcServer) GetAllToDos(_ *pb.NoParams, resp pb.TodoGrpc_GetAllToDo
 }
 
 func (s *TodoGrpcServer) MonitorToDos(_ *pb.NoParams, mon pb.TodoGrpc_MonitorToDosServer) error {
+	log.Println("Entered MonitorToDos")
+
+	mon.Send(&pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Noop})
+
+	var wg sync.WaitGroup
+	wg.Add(1)
+	subId := s.pubsub.AddSub(func(upd *pb.ToDoUpdate) bool {
+		err := mon.Send(upd)
+		if err != nil {
+			defer wg.Done()
+			log.Printf("MonitorToDos disconnected %v", err)
+		}
+		return err == nil
+	})
+
+	log.Printf("MonitorToDos sub added; subId:%d", subId)
+	wg.Wait()
 	return nil
 }
 
 func (s *TodoGrpcServer) ApplyOps(ops pb.TodoGrpc_ApplyOpsServer) error {
 	log.Println("Entered ApplyOps")
+
+	ops.Send(&pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Noop})
 
 	for {
 		op, err := ops.Recv()
@@ -97,7 +121,10 @@ func (s *TodoGrpcServer) addNewToDo(newToDo *pb.NewToDo) (*pb.ToDoUpdate, error)
 	todo := pb.ToDo{Task: newToDo.GetTask(), Done: false, UserID: newToDo.UserID, TodoID: td_id}
 	s.todos.Store(todo.TodoID, &todo)
 
-	return &pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Added, Todo: &todo}, nil
+	upd := &pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Added, Todo: &todo}
+	s.pubsub.Publish(upd)
+
+	return upd, nil
 }
 
 func (s *TodoGrpcServer) updateToDo(todoId string, done bool) (*pb.ToDoUpdate, error) {
@@ -107,6 +134,7 @@ func (s *TodoGrpcServer) updateToDo(todoId string, done bool) (*pb.ToDoUpdate, e
 		todoptr := todo.(*pb.ToDo)
 		todoptr.Done = done
 		upd := pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Updated, Todo: todoptr}
+		s.pubsub.Publish(&upd)
 		return &upd, nil
 	} else {
 		return nil, errors.New("todo not found")
@@ -118,7 +146,8 @@ func (s *TodoGrpcServer) deleteToDo(todoId string) (*pb.ToDoUpdate, error) {
 
 	if ok {
 		todoptr := todo.(*pb.ToDo)
-		return &pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Deleted, Todo: todoptr}, nil
+		upd := &pb.ToDoUpdate{UpdateType: pb.ToDoUpdateType_Deleted, Todo: todoptr}
+		return upd, nil
 	} else {
 		return nil, errors.New("todo not found")
 	}
@@ -165,7 +194,8 @@ func main() {
 	}
 
 	s := grpc.NewServer()
-	pb.RegisterTodoGrpcServer(s, &TodoGrpcServer{})
+
+	pb.RegisterTodoGrpcServer(s, NewTodoGrpcServer())
 	log.Printf("server listening at %v", lis.Addr())
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("failed to serve:%v", err)
